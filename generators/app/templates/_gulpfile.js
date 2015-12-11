@@ -171,7 +171,8 @@ gulp.task('compress', function() {
         // name at the top of this file
         .pipe(zip(bannerName+'.zip' ))
         .pipe(filesize())
-        .pipe(gulp.dest(bannerName + '/delivery'));
+        // all zips go to a top level folder for easy delivery
+        .pipe(gulp.dest('delivery'));
 });
 
 /*
