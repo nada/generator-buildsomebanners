@@ -1,8 +1,9 @@
 // DoubleClick HTML polite banner
 // <%= creativeName %>
 
-// Rename the archive that will be created here
-var archiveName = '<%= archiveName %>';
+// the formats and languages used
+var formats = [<%= creativeFormats %>];
+var langs = [<%= creativeLanuages %>];
 
 // dependencies
 var gulp = require('gulp');
@@ -19,9 +20,12 @@ var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
 var header = require('gulp-header');
 var filesize = require('gulp-filesize');
+var argv = require('yargs').argv;
 
 // read in the package file
 var pkg = require('./package.json');
+
+var bannerName = '';
 
 // Banner message to be appended to minified files
 var nowDate = new Date();
@@ -56,13 +60,13 @@ gulp.task('uglify:dist', function() {
             beautify: false // make code pretty? default is false
         }
     };
-    return gulp.src('dev/script.js')
+    return gulp.src(bannerName + '/dev/script.js')
         .pipe(uglify(opt))
         .pipe(rename('script.js'))
         .pipe(header(bannerMessageJsCss, {
             pkg: pkg
         }))
-        .pipe(gulp.dest('dist/'));
+        .pipe(gulp.dest(bannerName + '/dist/'));
 });
 
 // Uglify / Minify inline JS and CSS
@@ -79,23 +83,23 @@ gulp.task('minify-inline', function() {
             }
         }
     };
-    gulp.src('dist/*.html')
+    gulp.src(bannerName + '/dist/*.html')
         .pipe(minifyInline(opt))
-        .pipe(gulp.dest('dist/'))
+        .pipe(gulp.dest(bannerName + '/dist/'))
 });
 
 gulp.task('sass:dev', function() {
-    return gulp.src('dev/style.scss')
+    return gulp.src(bannerName + '/dev/style.scss')
         .pipe(sass({
             outputStyle: "expanded"
         }).on('error', sass.logError))
         .pipe(rename('style.css'))
-        .pipe(gulp.dest('dev'))
+        .pipe(gulp.dest(bannerName + '/dev'))
         .pipe(connect.reload());;
 });
 
 gulp.task('sass:dist', function() {
-    return gulp.src('dev/style.scss')
+    return gulp.src(bannerName + '/dev/style.scss')
         .pipe(sass({
             outputStyle: "compressed"
         }).on('error', sass.logError))
@@ -103,7 +107,7 @@ gulp.task('sass:dist', function() {
             pkg: pkg
         }))
         .pipe(rename('style.css'))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(bannerName + '/dist'));
 });
 
 gulp.task('minify-html', function() {
@@ -112,23 +116,23 @@ gulp.task('minify-html', function() {
         spare: false
     };
 
-    return gulp.src('dist/*.html')
+    return gulp.src(bannerName + '/dist/*.html')
         .pipe(minifyHTML(opts))
         .pipe(header(bannerMessageHtml, {
             pkg: pkg
         }))
-        .pipe(gulp.dest('./dist/'));
+        .pipe(gulp.dest(bannerName + '/dist/'));
 });
 
 gulp.task('del', function() {
     del([
-        'dist/*'
+        bannerName + '/dist/*'
     ])
 });
 
 gulp.task('connect', function() {
     connect.server({
-        root: ['dev'],
+        root: [bannerName + '/dev'],
         port: 8889,
         livereload: true,
         //livereload: { port: '9999' }
@@ -149,20 +153,28 @@ gulp.task('open', function() {
 });
 
 gulp.task('copy-to-dist-folder', function() {
-    return gulp.src(['dev/index.html', 'dev/style.css', 'dev/*.png', 'dev/*.jpg', 'dev/*.gif', 'dev/script.js', '!dev/comp*'])
-        .pipe(gulp.dest('dist'));
+    return gulp.src([
+      bannerName + '/dev/index.html',
+      bannerName + '/dev/style.css',
+      bannerName + '/dev/*.png',
+      bannerName + '/dev/*.jpg',
+      bannerName + '/dev/*.gif',
+      bannerName + '/dev/script.js',
+      bannerName + '/dev/*.min.js',
+      '!' + bannerName + '/dev/comp*'])
+        .pipe(gulp.dest(bannerName + '/dist'));
 });
 
 gulp.task('compress', function() {
-    return gulp.src('dist/*')
+    return gulp.src(bannerName + '/dist/*')
         // for quick access, you can change this
         // name at the top of this file
-        .pipe(zip(archiveName+'.zip' ))
+        .pipe(zip(bannerName+'.zip' ))
         .pipe(filesize())
-        .pipe(gulp.dest('delivery'));
+        .pipe(gulp.dest(bannerName + '/delivery'));
 });
 
-
+/*
 gulp.task('archive', function() {
     // make a zip all the files, including dev folder, for archiving the banner
    var success = gulp.src(['gulpfile.js', 'package.json', '*.sublime-project', 'dev/*', 'dist/*', 'delivery/*'], {cwdbase: true})
@@ -176,18 +188,20 @@ gulp.task('archive', function() {
     gutil.log('--------------------------------');
     return success;
 });
+*/
 
 gulp.task('basic-reload', function() {
-    gulp.src('dev')
+    gulp.src(bannerName + '/dev')
         .pipe(connect.reload());
 });
 
 gulp.task('watch', function() {
-    gulp.watch(['dev/*.html', 'dev/*.js'], ['basic-reload']);
-    gulp.watch(['dev/*.scss'], ['sass:dev']);
+    gulp.watch([bannerName + '/dev/*.html', bannerName + '/dev/*.js'], ['basic-reload']);
+    gulp.watch([bannerName + '/dev/*.scss'], ['sass:dev']);
 });
 
-gulp.task('build', function(callback) {
+//internal
+gulp.task('build-internal', function(callback) {
     runSequence('del', 'copy-to-dist-folder', ['minify-html'], ['minify-inline', 'sass:dist'], 'uglify:dist', ['compress'],
         callback);
 });
@@ -205,12 +219,43 @@ gulp.task('help', function() {
     gutil.log(gutil.colors.red('buildabanner'), 'help');
     gutil.log('--------------------------');
     gutil.log('There are 3 basic commands.');
-    gutil.log(gutil.colors.yellow('gulp'), ': for dev use, spins up server w livereload as you edit files');
-    gutil.log(gutil.colors.yellow('gulp build'), ': minifies files from the dev directory into the', gutil.colors.red('dist'), 'directory');
-    gutil.log('and creates a zip of these files in', gutil.colors.red('delivery'), 'directory');
-    gutil.log(gutil.colors.yellow('gulp archive'), 'takes files from the '+ gutil.colors.red('dev'), 'directory' + ' plus other important files');
-    gutil.log('and zips them in the', gutil.colors.red('archive'), 'directory for archival purposes.');
+    gutil.log(gutil.colors.yellow('gulp dev -f [format] -l [language] '), ': for dev use, spins up server w livereload as you edit files for specified format and language');
+    gutil.log(gutil.colors.yellow('gulp build -f [format] -l [language]'), ': minifies files from the dev directory of the specified format and language into the', gutil.colors.red('dist'), 'directory');
+    gutil.log(gutil.colors.yellow('sh ./buildall.sh'), ': runs the build task on all formats');
     gutil.log('--------------------------');
 });
 
-gulp.task('default', ['serve']);
+//gulp.task('default', ['serve']);
+gulp.task('default', ['help']);
+
+gulp.task('dev', function(callback) {
+  validateArguments();
+  setBannerName(argv.f.toString(), argv.l.toString());
+  runSequence('serve', callback);
+});
+
+gulp.task('build', function(callback) {
+  validateArguments();
+  setBannerName(argv.f.toString(), argv.l.toString());
+  runSequence('build-internal', callback);
+});
+
+
+validateArguments = function() {
+  var isValid = true;
+  if(argv.f === undefined || formats.indexOf(argv.f.toString()) == -1) {
+    gutil.log(gutil.colors.red('you have to specify a valid format parameter: ') + formats);
+    isValid = false;
+  }
+  if(argv.l === undefined || langs.indexOf(argv.l.toString()) == -1) {
+    gutil.log(gutil.colors.red('you have to specify a valid language parameter: ') + langs);
+    isValid = false;
+  }
+  if(!isValid) {
+    throw Error();  //TODO a real stop here
+  }
+}
+
+setBannerName = function(f, l) {
+  bannerName = f + "-" + l;
+};
