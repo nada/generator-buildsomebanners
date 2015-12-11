@@ -14,4 +14,22 @@ $bannerBackColor: #ffffff;
 
 .slide {
   position: absolute;
+  z-index: 4;
+
+  &.image {
+    z-index: 1;
+  }
+}
+
+.cta {
+  position: absolute;
+  left: ($bannerWidth - ($bannerWidth * 0.5)) / 2;
+  bottom: 20px;
+  width: $bannerWidth * 0.5;
+  height: 40px;
+  background: green;
+  color: white;
+  z-index: 99;
+  border-radius: 3px;
+  font-size: 0.75rem;
 }
