@@ -1,7 +1,12 @@
 @charset "UTF-8";
-/* CSS Document */ 
+/* CSS Document */
 
+$bannerWidth:<%= bannerWidth %>px;
+$bannerHeight:<%= bannerHeight %>px;
 $bannerBackColor: #6699cc;
+
+
+@import '../../commmon/common.scss';
 
 html {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -27,11 +32,11 @@ body, body * {
     -o-transform-origin:0% 0%; /* Opera */
 
 	position: absolute;
-    // width and height are 2px less than the expected 
+    // width and height are 2px less than the expected
     // size to accommodate the 1px border on the ad
-	width: <%= bannerWidth %>px;
-	height: <%= bannerHeight %>px;
-    overflow: hidden;
+	width: $bannerWidth;
+	height: $bannerHeight;
+  overflow: hidden;
 	border:1px solid #666666;
 	top: 0px;
 	left: 0px;
@@ -39,7 +44,7 @@ body, body * {
 
     // these are only useful in rare circumstances
     // so they are commented out
-    // 
+    //
     // -webkit-transform : translateZ(0);
     // -o-transform : translateZ(0);
     // -moz-transform : translateZ(0);
@@ -59,7 +64,7 @@ body, body * {
 	z-index: 100;
 	background: $bannerBackColor; // url(background.jpg);
     // If you put a single sprite sheet into all of your
-    // div tags, you can effeciently put set the background 
+    // div tags, you can effeciently put set the background
     // image of all child dives this this rule below
     // You will need to set the background position,
     // width and height on the individual divs though

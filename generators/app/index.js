@@ -194,8 +194,8 @@ module.exports = yeoman.generators.Base.extend({
                         bannerLanguage: lang
                     }
                     this.fs.copyTpl(
-                        this.templatePath('dev/_script' + bannerSuffix + '.js'),
-                        this.destinationPath(destPathPrefix + 'dev/script.js'),
+                        this.templatePath('dev/_banner' + bannerSuffix + '.js'),
+                        this.destinationPath(destPathPrefix + 'dev/banner.js'),
                         scriptOptions
                     );
                     // process and copy the dev/index.html
@@ -215,8 +215,8 @@ module.exports = yeoman.generators.Base.extend({
                         bannerHeight: bannerHeight
                     }
                     this.fs.copyTpl(
-                        this.templatePath('dev/_style.scss'),
-                        this.destinationPath(destPathPrefix + 'dev/style.scss'),
+                        this.templatePath('dev/_banner.scss'),
+                        this.destinationPath(destPathPrefix + 'dev/banner.scss'),
                         styleOptions
                     );
                 }

@@ -20,6 +20,7 @@ var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
 var header = require('gulp-header');
 var filesize = require('gulp-filesize');
+var concat = require('gulp-concat');
 var argv = require('yargs').argv;
 
 // read in the package file
@@ -47,6 +48,12 @@ var bannerMessageJsCss = ['/**',
 
 
 // TASKS
+// Concatinate JS files
+gulp.task('concat-js', function() {
+  return gulp.src(['common/common.js', bannerName + '/dev/banner.js'])
+    .pipe(concat('script.js'))
+    .pipe(gulp.dest(bannerName + '/dev/'));
+});
 
 // Uglify external JS files
 gulp.task('uglify:dist', function() {
@@ -89,7 +96,7 @@ gulp.task('minify-inline', function() {
 });
 
 gulp.task('sass:dev', function() {
-    return gulp.src(bannerName + '/dev/style.scss')
+    return gulp.src(bannerName + '/dev/banner.scss')
         .pipe(sass({
             outputStyle: "expanded"
         }).on('error', sass.logError))
@@ -99,7 +106,7 @@ gulp.task('sass:dev', function() {
 });
 
 gulp.task('sass:dist', function() {
-    return gulp.src(bannerName + '/dev/style.scss')
+    return gulp.src(bannerName + '/dev/banner.scss')
         .pipe(sass({
             outputStyle: "compressed"
         }).on('error', sass.logError))
@@ -197,18 +204,18 @@ gulp.task('basic-reload', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch([bannerName + '/dev/*.html', bannerName + '/dev/*.js'], ['basic-reload']);
-    gulp.watch([bannerName + '/dev/*.scss'], ['sass:dev']);
+    gulp.watch([bannerName + '/dev/*.html', bannerName + '/dev/*.js', 'common/common.js'], ['concat-js', 'basic-reload']);
+    gulp.watch([bannerName + '/dev/*.scss', 'common/common.scss'], ['sass:dev']);
 });
 
 //internal
 gulp.task('build-internal', function(callback) {
-    runSequence('del', 'copy-to-dist-folder', ['minify-html'], ['minify-inline', 'sass:dist'], 'uglify:dist', ['compress'],
+    runSequence('del', 'concat-js', 'copy-to-dist-folder', ['minify-html'], ['minify-inline', 'sass:dist'], 'uglify:dist', ['compress'],
         callback);
 });
 
 gulp.task('serve', function(callback) {
-    runSequence('sass:dev', ['connect'], ['open', 'watch'],
+    runSequence('concat-js', 'sass:dev', ['connect'], ['open', 'watch'],
         callback);
 });
 
