@@ -5,7 +5,7 @@ var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
 var os = require('os');
 
-describe('buildabanner:app', function () {
+describe('buildsomebanners:app', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
@@ -15,10 +15,12 @@ describe('buildabanner:app', function () {
 
   it('creates files', function () {
     assert.file([
-      'bower.json',
       'package.json',
       '.editorconfig',
-      '.jshintrc'
+      '.jshintrc',
+      '.gitignore',
+      'README.md',
+      'buildall.sh'
     ]);
   });
 });
