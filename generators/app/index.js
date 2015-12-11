@@ -281,6 +281,10 @@ module.exports = yeoman.generators.Base.extend({
                 this.templatePath('gitignore'),
                 this.destinationPath('.gitignore')
             );
+            this.fs.copy(
+                this.templatePath('common'),
+                this.destinationPath('common')
+            );
         }
     },
 
