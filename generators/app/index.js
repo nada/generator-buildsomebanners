@@ -51,7 +51,7 @@ module.exports = yeoman.generators.Base.extend({
             name: 'bannerLanguages',
             message: 'Choose all lanugages needed.',
             choices: ['de', 'fr', 'it', 'en'],
-            default: ['de'],
+            default: [],
             validate: function(inp) {
               if(inp.length === 0) {
                 return 'Please choose at least one language';
