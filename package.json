@@ -1,15 +1,19 @@
 {
   "name": "generator-buildsomebanners",
-  "version": "0.2.3",
+  "version": "0.0.1",
   "description": "Yeoman generator to get a HTML banner project, standard or DoubleClick Studio, started using Gulp",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "nadax/generator-buildabanner",
+  "repository": "nada/generator-buildsomebanners",
   "author": {
-    "name": "John F Morton",
-    "email": "john@johnfmorton.com",
-    "url": "https://github.com/johnfmorton"
+    "name": "Urs Breton",
+    "email": "me@ursbreton.com",
+    "url": "https://github.com/nada"
   },
+  #is this the right way for a nice and clean attribution???
+  "contributors": [
+    "John F Morton <john@johnfmorton.com> (https://github.com/johnfmorton)"
+  ],
   "scripts": {
     "test": "mocha"
   },
