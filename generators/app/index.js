@@ -178,6 +178,10 @@ module.exports = yeoman.generators.Base.extend({
                         this.destinationPath(destPathPrefix + 'dev/banner.scss'),
                         styleOptions
                     );
+                    this.fs.copy(
+                        this.templatePath('dev/gsap/*.min.js'),
+                        this.destinationPath(destPathPrefix + 'dev/gsap/')
+                    );
                 }
             }
 
