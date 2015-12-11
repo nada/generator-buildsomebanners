@@ -26,28 +26,25 @@ bannerInit = function(){
     //Bring in listeners i.e. if a user clicks or rollovers
     addListeners();
 
-    // Show Ad (this can also be done in the index.html
-    // which it is in the default template.)
-    //
-    // container.style.display = "block";
+    //show it
+    content.style.display = "block";
 
-    anim();
+    //Start the banner
+    step1();
 }
 
-anim = function(){
-    console.log('Banner animation has begun.');
+reset = function() {
+  TweenLite.set('.overlay', {css: { autoAlpha: 0 }});
+  TweenLite.set('.text', {css: { autoAlpha: 0 }});
+  TweenLite.set('.cta', {css: { autoAlpha: 0 }});
+  var s = Math.ceil((BANNER_W / IMAGE_W) * 10) / 10;
+  TweenLite.set('.image', {css: { opacity: 0, scale: s ,transformOrigin:"left top"}});
+};
 
-    // Example #1
-    //
-    // If you're using TimelineLite, you can follow this example
-    // var tl = new TimelineLite();
-    // tl.to(someElementInHTML, 1, {css:{top: "100px", left: "100px"}})
-    // tl.play();
 
-    // Example #2
-    //
-    // If you're just doing TweenLite directly without TimelineLite
-    // TweenLite.to(someElementInHTML, 1, {css:{top: "100px", left: "100px"}});
+step1 = function() {
+  console.log('Banner animation has begun.');
+  //tl.play(0);
 }
 
 //Add Event Listeners for DoubleClick
