@@ -85,46 +85,6 @@ module.exports = yeoman.generators.Base.extend({
         }*/];
 
         this.prompt(prompts, function(props) {
-            /* Set the width and height properites based on bannerSize */
-
-
-            /*
-            switch (props.bannerSize) {
-                case '320x50':
-                    props.bannerWidth = 318;
-                    props.bannerHeight = 48;
-                    props.actualBannerWidth = 320;
-                    props.actualBannerHeight = 50;
-                    break;
-                case '300x600':
-                    props.bannerWidth = 298;
-                    props.bannerHeight = 598;
-                    props.actualBannerWidth = 300;
-                    props.actualBannerHeight = 600;
-                    break;
-                case '728x90':
-                    props.bannerWidth = 726;
-                    props.bannerHeight = 88;
-                    props.actualBannerWidth = 728;
-                    props.actualBannerHeight = 90;
-                    break;
-                case '160x600':
-                    props.bannerWidth = 158;
-                    props.bannerHeight = 598;
-                    props.actualBannerWidth = 160;
-                    props.actualBannerHeight = 600;
-                    break;
-                case '300x250':
-                default:
-                    props.bannerWidth = 298;
-                    props.bannerHeight = 248;
-                    props.actualBannerWidth = 300;
-                    props.actualBannerHeight = 250;
-                    break;
-
-              }
-              */
-
             this.props = props;
             // To access props later use this.props.someOption;
 
@@ -186,7 +146,6 @@ module.exports = yeoman.generators.Base.extend({
                         this.templatePath('dev/!(_index.html|_*.*|*.src)'),
                         this.destinationPath(destPathPrefix + 'dev')
                     );
-
                     var scriptOptions = {
                         projectName: this.props.projectName,
                         projectDesc: this.props.projectDesc,
@@ -194,7 +153,7 @@ module.exports = yeoman.generators.Base.extend({
                         bannerLanguage: lang
                     }
                     this.fs.copyTpl(
-                        this.templatePath('dev/_banner' + bannerSuffix + '.js'),
+                        this.templatePath('dev/_banner.js'),
                         this.destinationPath(destPathPrefix + 'dev/banner.js'),
                         scriptOptions
                     );
@@ -282,8 +241,21 @@ module.exports = yeoman.generators.Base.extend({
                 this.destinationPath('.gitignore')
             );
             this.fs.copy(
-                this.templatePath('common'),
-                this.destinationPath('common')
+                this.templatePath('common/common.scss'),
+                this.destinationPath('common/common.scss')
+            );
+            var bannerSuffix;
+            switch(this.props.projectType) {
+                case "DoubleClick":
+                bannerSuffix = "_dc";
+                break;
+                case "Standard":
+                default:
+                bannerSuffix = "_standard"
+            }
+            this.fs.copy(
+                this.templatePath('common/_common' + bannerSuffix + '.js'),
+                this.destinationPath('common/common.js')
             );
         }
     },
