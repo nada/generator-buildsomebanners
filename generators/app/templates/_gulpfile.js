@@ -167,7 +167,7 @@ gulp.task('copy-to-dist-folder', function() {
       bannerName + '/dev/*.jpg',
       bannerName + '/dev/*.gif',
       bannerName + '/dev/script.js',
-      bannerName + '/dev/*.min.js',
+      bannerName + '/dev/**/*.min.js',
       '!' + bannerName + '/dev/comp*'])
         .pipe(gulp.dest(bannerName + '/dist'));
 });
