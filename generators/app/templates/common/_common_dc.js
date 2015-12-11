@@ -1,12 +1,16 @@
 // JavaScript Document
 // HTML5 Ad Template JS from DoubleClick by Google
 
+//Settings
+var LOOPS = 3;  //0 == infinite
+var loopCnt = 0;
+
 //Declaring elements from the HTML i.e. Giving them Instance Names like in Flash - makes it easier
 var container;
 var content;
 var bgExit;
 
-// var someElementInHTML;
+var tl;
 
 //Function to run with any animations starting on load, or bringing in images etc
 // bannerInit is
@@ -16,15 +20,13 @@ bannerInit = function(){
     container = document.getElementById('container_ad');
     content = document.getElementById('content_ad');
     bgExit = document.getElementById('background_exit_ad');
-    // someElementInHTML = document.getElementById('some_element_in_html');
 
-    //Setup Background Image (this can be done in CSS as well
-    // which it is in the default template.)
-    //
-    //content.style.backgroundImage = "url("+Enabler.getUrl('background.jpg')+")";
+    reset();
 
     //Bring in listeners i.e. if a user clicks or rollovers
     addListeners();
+
+    setUpTimeline();
 
     //show it
     content.style.display = "block";
@@ -34,17 +36,45 @@ bannerInit = function(){
 }
 
 reset = function() {
-  TweenLite.set('.overlay', {css: { autoAlpha: 0 }});
-  TweenLite.set('.text', {css: { autoAlpha: 0 }});
+  TweenLite.set('.slide', {css: { autoAlpha: 0 }});
   TweenLite.set('.cta', {css: { autoAlpha: 0 }});
-  var s = Math.ceil((BANNER_W / IMAGE_W) * 10) / 10;
-  TweenLite.set('.image', {css: { opacity: 0, scale: s ,transformOrigin:"left top"}});
 };
 
+setUpTimeline = function() {
+  //prepare the time line
+  tl = new TimelineLite();
+  tl.pause();
+  tl.to('.image', 0.5, {css: { autoAlpha: 1 }, ease:Power0.easeNone})
+    .to('.slide-1', 1, {css: { autoAlpha: 1 }, ease:Power0.easeNone, delay:0})
+    .to('.slide-1', 1, {css: { autoAlpha: 0 }, ease:Power0.easeNone, delay:4})
+    .to('.slide-2', 1, {css: { autoAlpha: 1 }, ease:Power0.easeNone, delay:0})
+    .to('.cta', 0.5, {css: { autoAlpha: 1}, ease:Power0.easeNone, delay: 2.0}, '-=2.0')
+    .to('.slide-2', 1, {css: { autoAlpha: 0 }, ease:Power0.easeNone, delay:2.0})
+    .addLabel('tearDown')
+    //tear it down
+    .to('.cta', 0.5, {css: { autoAlpha: 0}, ease:Power0.easeNone, delay: 0})
+    .to('.slide-2', 0.5, {css: { autoAlpha: 0 }, ease:Power0.easeNone, delay: 0.2})
+    .to('.image', 0.5, {css: { autoAlpha: 0}, ease:Power0.easeNone, delay: 0.4, onComplete:onTimelineEnd});
+
+  //pause before tear down
+  tl.addPause('tearDown', onTearDown);
+}
 
 step1 = function() {
   console.log('Banner animation has begun.');
-  //tl.play(0);
+  tl.play(0);
+}
+
+onTearDown = function() {
+  loopCnt++;
+  if(loopCnt < LOOPS) {
+    tl.resume();
+  }
+}
+
+onTimelineEnd = function() {
+  reset();
+  step1();
 }
 
 //Add Event Listeners for DoubleClick
