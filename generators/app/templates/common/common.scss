@@ -26,8 +26,8 @@ body, body * {
 	position: absolute;
     // width and height are 2px less than the expected
     // size to accommodate the 1px border on the ad
-	width: $bannerWidth;
-	height: $bannerHeight;
+	width: $bannerWidth - 2px;
+	height: $bannerHeight - 2px;
   overflow: hidden;
 	border:1px solid #666666;
 	top: 0px;
