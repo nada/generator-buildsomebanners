@@ -173,7 +173,7 @@ gulp.task('copy-to-dist-folder', function() {
 });
 
 gulp.task('compress', function() {
-    return gulp.src(bannerName + '/dist/*')
+    return gulp.src(bannerName + '/dist/**')
         // for quick access, you can change this
         // name at the top of this file
         .pipe(zip(bannerName+'.zip' ))
